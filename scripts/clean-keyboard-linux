@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SECONDS_TO_LOCK="${1:-45}"
+
+if ! [[ "$SECONDS_TO_LOCK" =~ ^[0-9]+$ ]] || [[ "$SECONDS_TO_LOCK" -le 0 ]]; then
+  echo "Invalid duration: $SECONDS_TO_LOCK (must be a positive integer)." >&2
+  exit 2
+fi
+
+if ! command -v xinput >/dev/null 2>&1; then
+  echo "xinput is required on Linux. Install xinput and try again." >&2
+  exit 1
+fi
+
+if [[ -z "${DISPLAY:-}" ]]; then
+  echo "DISPLAY is not set. This script requires an X11 session." >&2
+  exit 1
+fi
+
+mapfile -t KEYBOARD_IDS < <(
+  xinput --list --short | awk '
+    /slave[[:space:]]+keyboard/ {
+      for (i = 1; i <= NF; i++) {
+        if ($i ~ /^id=/) {
+          sub(/^id=/, "", $i)
+          print $i
+        }
+      }
+    }
+  '
+)
+
+if [[ "${#KEYBOARD_IDS[@]}" -eq 0 ]]; then
+  echo "No keyboard devices found via xinput." >&2
+  exit 1
+fi
+
+DISABLED_IDS=()
+
+cleanup() {
+  local id
+  for id in "${DISABLED_IDS[@]}"; do
+    xinput enable "$id" >/dev/null 2>&1 || true
+  done
+  if [[ "${#DISABLED_IDS[@]}" -gt 0 ]]; then
+    echo "Keyboard unlocked."
+  fi
+}
+
+trap cleanup EXIT INT TERM
+
+for id in "${KEYBOARD_IDS[@]}"; do
+  if xinput disable "$id" >/dev/null 2>&1; then
+    DISABLED_IDS+=("$id")
+  fi
+done
+
+if [[ "${#DISABLED_IDS[@]}" -eq 0 ]]; then
+  echo "Failed to disable any keyboard device." >&2
+  exit 1
+fi
+
+echo "Keyboard locked for $SECONDS_TO_LOCK seconds. Start cleaning now."
+echo "Linux mode does not support Esc early unlock while all keyboards are disabled."
+
+remaining="$SECONDS_TO_LOCK"
+while [[ "$remaining" -gt 0 ]]; do
+  sleep 1
+  remaining=$((remaining - 1))
+
+  if [[ "$remaining" -le 10 ]] || [[ $((remaining % 10)) -eq 0 ]]; then
+    [[ "$remaining" -gt 0 ]] && echo "Remaining: $remaining seconds"
+  fi
+done
