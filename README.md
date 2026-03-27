@@ -7,7 +7,7 @@ A CLI to temporarily disable keyboard input while you clean your computer.
 - Locks keyboard input for a configurable duration (`--seconds`)
 - macOS: optional emergency unlock with `Esc` (`--allow-escape true`)
 - Linux (X11): disables keyboard devices via `xinput`
-- Windows: blocks user input with PowerShell (`BlockInput`)
+- Windows: keyboard-only lock via low-level keyboard hook (mouse/trackpad remains active)
 
 ## Requirements
 
@@ -28,6 +28,32 @@ A CLI to temporarily disable keyboard input while you clean your computer.
 - Windows PowerShell / PowerShell 7
 - Run in a Windows session (not WSL)
 - If input lock fails, run terminal as Administrator
+
+## Quick Install (No Clone)
+
+### macOS / Linux
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/eliophan/cleaning-keyboard/main/install.sh | bash
+```
+
+After install:
+
+```bash
+clean-keyboard 60
+```
+
+### Windows
+
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/cleaning-keyboard/main/install.ps1 | iex"
+```
+
+After install (open a new terminal):
+
+```powershell
+clean-keyboard 60
+```
 
 ## Usage
 
@@ -70,4 +96,4 @@ swift run cleaning-keyboard --seconds 30 --allow-escape false
 
 - Keep `--allow-escape true` unless you have another way to recover input.
 - On Linux, Esc early unlock is not available when all keyboard devices are disabled.
-- On Windows, both keyboard and mouse are blocked until timeout.
+- On Windows, Esc early unlock is not available while keyboard lock is active.
