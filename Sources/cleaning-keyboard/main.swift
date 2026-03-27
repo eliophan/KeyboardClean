@@ -85,16 +85,16 @@ final class KeyboardLocker {
 
 func printUsage() {
     let text = """
-    Cách dùng:
+    Usage:
       cleaning-keyboard [--seconds N] [--allow-escape true|false]
 
-    Mặc định:
+    Defaults:
       --seconds 45
       --allow-escape true
 
-    Ghi chú:
-      - Yêu cầu cấp quyền Accessibility cho Terminal/iTerm.
-      - Nhấn Esc để thoát sớm khi --allow-escape=true.
+    Notes:
+      - Accessibility permission is required for Terminal/iTerm.
+      - Press Esc for early unlock when --allow-escape=true.
     """
     print(text)
 }
@@ -118,14 +118,14 @@ func parseArgs() -> Config? {
             exit(0)
         case "--seconds":
             guard index + 1 < args.count, let value = Int(args[index + 1]), value > 0 else {
-                fputs("Giá trị --seconds không hợp lệ.\\n", stderr)
+                fputs("Invalid value for --seconds.\\n", stderr)
                 return nil
             }
             config.seconds = value
             index += 1
         case "--allow-escape":
             guard index + 1 < args.count else {
-                fputs("Thiếu giá trị cho --allow-escape.\\n", stderr)
+                fputs("Missing value for --allow-escape.\\n", stderr)
                 return nil
             }
             let value = args[index + 1].lowercased()
@@ -134,12 +134,12 @@ func parseArgs() -> Config? {
             } else if value == "false" {
                 config.allowEscape = false
             } else {
-                fputs("--allow-escape phải là true hoặc false.\\n", stderr)
+                fputs("--allow-escape must be true or false.\\n", stderr)
                 return nil
             }
             index += 1
         default:
-            fputs("Tham số không hỗ trợ: \(arg)\\n", stderr)
+            fputs("Unknown argument: \(arg)\\n", stderr)
             return nil
         }
 
@@ -157,43 +157,42 @@ guard let config = parseArgs() else {
 var shouldStopEarly = false
 let locker = KeyboardLocker(allowEscape: config.allowEscape) {
     shouldStopEarly = true
-    CFRunLoopStop(CFRunLoopGetCurrent())
 }
 
 guard locker.start() else {
     fputs(
-        "Không thể khóa bàn phím. Hãy cấp quyền Accessibility cho Terminal/iTerm trong System Settings > Privacy & Security > Accessibility.\\n",
+        "Cannot lock keyboard. Grant Accessibility permission to Terminal/iTerm in System Settings > Privacy & Security > Accessibility.\\n",
         stderr
     )
     exit(1)
 }
 
-print("Đã khóa bàn phím trong \(config.seconds) giây. Bắt đầu lau bàn phím ngay bây giờ.")
+print("Keyboard locked for \(config.seconds) seconds. Start cleaning now.")
 if config.allowEscape {
-    print("Nhấn Esc để mở khóa sớm.")
+    print("Press Esc to unlock early.")
 }
 
-var remaining = config.seconds
-let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-    remaining -= 1
+let deadline = Date().addingTimeInterval(TimeInterval(config.seconds))
+var lastPrinted: Int?
 
+while !shouldStopEarly {
+    let remaining = Int(ceil(deadline.timeIntervalSinceNow))
     if remaining <= 0 {
-        timer.invalidate()
-        CFRunLoopStop(CFRunLoopGetCurrent())
-        return
+        break
     }
 
-    if remaining <= 10 || remaining % 10 == 0 {
-        print("Còn lại: \(remaining) giây")
+    if remaining != lastPrinted && (remaining <= 10 || remaining % 10 == 0) {
+        print("Remaining: \(remaining) seconds")
+        lastPrinted = remaining
     }
+
+    _ = RunLoop.current.run(mode: .default, before: Date().addingTimeInterval(0.1))
 }
 
-RunLoop.current.run()
-timer.invalidate()
 locker.stop()
 
 if shouldStopEarly {
-    print("Đã mở khóa bàn phím (Esc).")
+    print("Keyboard unlocked (Esc).")
 } else {
-    print("Đã mở khóa bàn phím.")
+    print("Keyboard unlocked.")
 }

@@ -4,4 +4,10 @@ set -euo pipefail
 SECONDS_TO_LOCK="${1:-45}"
 ALLOW_ESCAPE="${ALLOW_ESCAPE:-true}"
 
-swift run cleaning-keyboard --seconds "$SECONDS_TO_LOCK" --allow-escape "$ALLOW_ESCAPE"
+BIN_PATH="./.build/debug/cleaning-keyboard"
+
+if [[ ! -x "$BIN_PATH" ]]; then
+  swift build
+fi
+
+"$BIN_PATH" --seconds "$SECONDS_TO_LOCK" --allow-escape "$ALLOW_ESCAPE"
