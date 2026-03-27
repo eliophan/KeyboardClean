@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  basic-checks:
+    name: Swift Build + Script Syntax
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show Swift Version
+        run: swift --version
+
+      - name: Build Swift CLI
+        run: swift build
+
+      - name: Validate Shell Scripts
+        run: |
+          bash -n install.sh
+          bash -n scripts/keyboard-clean
+          bash -n scripts/keyboard-clean-linux
