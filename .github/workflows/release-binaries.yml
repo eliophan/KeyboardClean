@@ -1,0 +1,31 @@
+name: Release Binaries
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  macos-binary:
+    name: Build and Upload macOS Binary
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build release binary
+        run: swift build -c release
+
+      - name: Prepare artifact
+        run: |
+          cp .build/release/keyboard-clean keyboard-clean-macos
+          chmod +x keyboard-clean-macos
+
+      - name: Upload release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" keyboard-clean-macos --clobber

@@ -1,5 +1,5 @@
 param(
-  [string]$Repo = "eliophan/keyboard-clean",
+  [string]$Repo = "eliophan/KeyboardClean",
   [string]$Ref = "main",
   [string]$InstallDir = "$env:LOCALAPPDATA\keyboard-clean"
 )

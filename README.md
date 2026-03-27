@@ -19,7 +19,7 @@ A cross-platform CLI to temporarily lock keyboard input while you clean your com
 ### macOS
 
 - macOS 12+
-- Swift 5.9+
+- Swift 5.9+ (only needed if installer falls back to local build)
 - Accessibility permission for Terminal/iTerm:
   `System Settings > Privacy & Security > Accessibility`
 
@@ -39,7 +39,7 @@ A cross-platform CLI to temporarily lock keyboard input while you clean your com
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eliophan/KeyboardClean/main/install.sh | bash
 ```
 
 Run after install:
@@ -48,10 +48,15 @@ Run after install:
 keyboard-clean 60
 ```
 
+macOS installer behavior:
+
+- Tries prebuilt binary from latest GitHub Release first (fast, no local build).
+- Falls back to local Swift build if release asset is unavailable.
+
 ### Windows
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/KeyboardClean/main/install.ps1 | iex"
 ```
 
 Run after install (open a new terminal first):
@@ -70,6 +75,14 @@ Expected behavior:
 
 - Countdown prints in terminal.
 - Keyboard unlocks automatically when timer ends.
+
+## One-line binary download (macOS)
+
+If you want the fastest path and you trust the release binary:
+
+```bash
+mkdir -p "$HOME/.local/bin" && curl -fsSL https://github.com/eliophan/KeyboardClean/releases/latest/download/keyboard-clean-macos -o "$HOME/.local/bin/keyboard-clean" && chmod +x "$HOME/.local/bin/keyboard-clean"
+```
 
 ## Command reference
 
@@ -122,13 +135,13 @@ swift run keyboard-clean --seconds 30 --allow-escape false
 ### Install to custom location (macOS/Linux)
 
 ```bash
-KEYBOARD_CLEAN_INSTALL_DIR="$HOME/bin" curl -fsSL https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.sh | bash
+KEYBOARD_CLEAN_INSTALL_DIR="$HOME/bin" curl -fsSL https://raw.githubusercontent.com/eliophan/KeyboardClean/main/install.sh | bash
 ```
 
 ### Install from a different repo/ref (macOS/Linux)
 
 ```bash
-KEYBOARD_CLEAN_REPO="owner/repo" KEYBOARD_CLEAN_REF="branch-or-tag" curl -fsSL https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.sh | bash
+KEYBOARD_CLEAN_REPO="owner/repo" KEYBOARD_CLEAN_REF="branch-or-tag" curl -fsSL https://raw.githubusercontent.com/eliophan/KeyboardClean/main/install.sh | bash
 ```
 
 ## Update
@@ -138,7 +151,7 @@ KEYBOARD_CLEAN_REPO="owner/repo" KEYBOARD_CLEAN_REF="branch-or-tag" curl -fsSL h
 Re-run the installer:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eliophan/KeyboardClean/main/install.sh | bash
 ```
 
 ### Windows
@@ -146,7 +159,7 @@ curl -fsSL https://raw.githubusercontent.com/eliophan/keyboard-clean/main/instal
 Re-run the installer:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/KeyboardClean/main/install.ps1 | iex"
 ```
 
 ## Uninstall
