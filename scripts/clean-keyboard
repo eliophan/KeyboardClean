@@ -17,6 +17,9 @@ case "$(uname -s)" in
   Linux)
     "$(dirname "$0")/clean-keyboard-linux" "$SECONDS_TO_LOCK"
     ;;
+  CYGWIN*|MINGW*|MSYS*)
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(dirname "$0")/clean-keyboard-windows.ps1" -Seconds "$SECONDS_TO_LOCK"
+    ;;
   *)
     echo "Unsupported OS: $(uname -s)" >&2
     exit 1
