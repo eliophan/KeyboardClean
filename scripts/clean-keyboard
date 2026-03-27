@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SECONDS_TO_LOCK="${1:-45}"
+ALLOW_ESCAPE="${ALLOW_ESCAPE:-true}"
+
+swift run cleaning-keyboard --seconds "$SECONDS_TO_LOCK" --allow-escape "$ALLOW_ESCAPE"
