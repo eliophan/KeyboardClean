@@ -6,7 +6,7 @@ ALLOW_ESCAPE="${ALLOW_ESCAPE:-true}"
 
 case "$(uname -s)" in
   Darwin)
-    BIN_PATH="./.build/debug/cleaning-keyboard"
+    BIN_PATH="./.build/debug/keyboard-clean"
 
     if [[ ! -x "$BIN_PATH" ]]; then
       swift build
@@ -15,10 +15,10 @@ case "$(uname -s)" in
     "$BIN_PATH" --seconds "$SECONDS_TO_LOCK" --allow-escape "$ALLOW_ESCAPE"
     ;;
   Linux)
-    "$(dirname "$0")/clean-keyboard-linux" "$SECONDS_TO_LOCK"
+    "$(dirname "$0")/keyboard-clean-linux" "$SECONDS_TO_LOCK"
     ;;
   CYGWIN*|MINGW*|MSYS*)
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(dirname "$0")/clean-keyboard-windows.ps1" -Seconds "$SECONDS_TO_LOCK"
+    powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(dirname "$0")/keyboard-clean-windows.ps1" -Seconds "$SECONDS_TO_LOCK"
     ;;
   *)
     echo "Unsupported OS: $(uname -s)" >&2

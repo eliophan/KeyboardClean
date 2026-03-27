@@ -1,4 +1,4 @@
-# cleaning-keyboard
+# keyboard-clean
 
 A CLI to temporarily disable keyboard input while you clean your computer.
 
@@ -34,25 +34,25 @@ A CLI to temporarily disable keyboard input while you clean your computer.
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/eliophan/cleaning-keyboard/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.sh | bash
 ```
 
 After install:
 
 ```bash
-clean-keyboard 60
+keyboard-clean 60
 ```
 
 ### Windows
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/cleaning-keyboard/main/install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/eliophan/keyboard-clean/main/install.ps1 | iex"
 ```
 
 After install (open a new terminal):
 
 ```powershell
-clean-keyboard 60
+keyboard-clean 60
 ```
 
 ## Usage
@@ -60,7 +60,7 @@ clean-keyboard 60
 ### Run directly
 
 ```bash
-swift run cleaning-keyboard --seconds 60 --allow-escape true
+swift run keyboard-clean --seconds 60 --allow-escape true
 ```
 
 This direct command is for macOS.
@@ -68,28 +68,28 @@ This direct command is for macOS.
 ### Use helper script
 
 ```bash
-./scripts/clean-keyboard 60
+./scripts/keyboard-clean 60
 ```
 
 If you omit the argument, the script defaults to 45 seconds.
 - On macOS, it auto-builds with `swift build` if the binary does not exist.
 - On Linux, it uses `xinput` to disable and re-enable keyboard devices.
-- On Windows, it runs `scripts/clean-keyboard-windows.ps1` with `powershell.exe`.
+- On Windows, it runs `scripts/keyboard-clean-windows.ps1` with `powershell.exe`.
 
 ### Windows direct usage
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\clean-keyboard-windows.ps1 -Seconds 60
+powershell -ExecutionPolicy Bypass -File .\scripts\keyboard-clean-windows.ps1 -Seconds 60
 ```
 
 ## Examples
 
 ```bash
 # Lock for 2 minutes
-./scripts/clean-keyboard 120
+./scripts/keyboard-clean 120
 
 # macOS only: disable Esc early unlock
-swift run cleaning-keyboard --seconds 30 --allow-escape false
+swift run keyboard-clean --seconds 30 --allow-escape false
 ```
 
 ## Safety notes

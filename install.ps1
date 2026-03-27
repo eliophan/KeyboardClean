@@ -1,13 +1,13 @@
 param(
-  [string]$Repo = "eliophan/cleaning-keyboard",
+  [string]$Repo = "eliophan/keyboard-clean",
   [string]$Ref = "main",
-  [string]$InstallDir = "$env:LOCALAPPDATA\cleaning-keyboard"
+  [string]$InstallDir = "$env:LOCALAPPDATA\keyboard-clean"
 )
 
 $baseUrl = "https://raw.githubusercontent.com/$Repo/$Ref"
-$scriptUrl = "$baseUrl/scripts/clean-keyboard-windows.ps1"
-$scriptPath = Join-Path $InstallDir "clean-keyboard.ps1"
-$cmdPath = Join-Path $InstallDir "clean-keyboard.cmd"
+$scriptUrl = "$baseUrl/scripts/keyboard-clean-windows.ps1"
+$scriptPath = Join-Path $InstallDir "keyboard-clean.ps1"
+$cmdPath = Join-Path $InstallDir "keyboard-clean.cmd"
 
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 
@@ -42,5 +42,5 @@ if ($normalizedPath -notlike "*;$InstallDir;*") {
   Write-Output "Added $InstallDir to User PATH."
 }
 
-Write-Output "Installed clean-keyboard for Windows."
-Write-Output "Open a new terminal, then run: clean-keyboard 60"
+Write-Output "Installed keyboard-clean for Windows."
+Write-Output "Open a new terminal, then run: keyboard-clean 60"

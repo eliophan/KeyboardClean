@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="${CLEANING_KEYBOARD_REPO:-eliophan/cleaning-keyboard}"
-REF="${CLEANING_KEYBOARD_REF:-main}"
+REPO="${KEYBOARD_CLEAN_REPO:-eliophan/keyboard-clean}"
+REF="${KEYBOARD_CLEAN_REF:-main}"
 BASE_URL="https://raw.githubusercontent.com/${REPO}/${REF}"
-INSTALL_DIR="${CLEANING_KEYBOARD_INSTALL_DIR:-$HOME/.local/bin}"
+INSTALL_DIR="${KEYBOARD_CLEAN_INSTALL_DIR:-$HOME/.local/bin}"
 
 download() {
   local url="$1"
@@ -29,7 +29,7 @@ print_path_hint() {
     *":$INSTALL_DIR:"*) ;;
     *)
       echo
-      echo "Add this to your shell profile to use clean-keyboard directly:"
+      echo "Add this to your shell profile to use keyboard-clean directly:"
       echo "  export PATH=\"$INSTALL_DIR:\$PATH\""
       ;;
   esac
@@ -47,10 +47,10 @@ case "$(uname -s)" in
     tmp_dir="$(mktemp -d)"
     trap 'rm -rf "$tmp_dir"' EXIT
     src_file="$tmp_dir/main.swift"
-    bin_file="$INSTALL_DIR/cleaning-keyboard"
-    cmd_file="$INSTALL_DIR/clean-keyboard"
+    bin_file="$INSTALL_DIR/keyboard-clean"
+    cmd_file="$INSTALL_DIR/keyboard-clean"
 
-    download "$BASE_URL/Sources/cleaning-keyboard/main.swift" "$src_file"
+    download "$BASE_URL/Sources/keyboard-clean/main.swift" "$src_file"
     swiftc -O -framework ApplicationServices "$src_file" -o "$bin_file"
 
     cat >"$cmd_file" <<'EOF'
@@ -60,20 +60,20 @@ set -euo pipefail
 SECONDS_TO_LOCK="${1:-45}"
 ALLOW_ESCAPE="${ALLOW_ESCAPE:-true}"
 
-"$(dirname "$0")/cleaning-keyboard" --seconds "$SECONDS_TO_LOCK" --allow-escape "$ALLOW_ESCAPE"
+"$(dirname "$0")/keyboard-clean" --seconds "$SECONDS_TO_LOCK" --allow-escape "$ALLOW_ESCAPE"
 EOF
 
     chmod +x "$bin_file" "$cmd_file"
 
-    echo "Installed clean-keyboard to $INSTALL_DIR (macOS mode)."
+    echo "Installed keyboard-clean to $INSTALL_DIR (macOS mode)."
     print_path_hint
     ;;
   Linux)
-    cmd_file="$INSTALL_DIR/clean-keyboard"
-    download "$BASE_URL/scripts/clean-keyboard-linux" "$cmd_file"
+    cmd_file="$INSTALL_DIR/keyboard-clean"
+    download "$BASE_URL/scripts/keyboard-clean-linux" "$cmd_file"
     chmod +x "$cmd_file"
 
-    echo "Installed clean-keyboard to $INSTALL_DIR (Linux mode)."
+    echo "Installed keyboard-clean to $INSTALL_DIR (Linux mode)."
     echo "Note: Requires X11 and xinput at runtime."
     print_path_hint
     ;;
@@ -85,4 +85,4 @@ EOF
 esac
 
 echo
-echo "Run: clean-keyboard 60"
+echo "Run: keyboard-clean 60"

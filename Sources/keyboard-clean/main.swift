@@ -86,7 +86,7 @@ final class KeyboardLocker {
 func printUsage() {
     let text = """
     Usage:
-      cleaning-keyboard [--seconds N] [--allow-escape true|false]
+      keyboard-clean [--seconds N] [--allow-escape true|false]
 
     Defaults:
       --seconds 45

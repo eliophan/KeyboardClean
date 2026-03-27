@@ -2,16 +2,16 @@
 import PackageDescription
 
 let package = Package(
-    name: "cleaning-keyboard",
+    name: "keyboard-clean",
     platforms: [
         .macOS(.v12)
     ],
     products: [
-        .executable(name: "cleaning-keyboard", targets: ["cleaning-keyboard"])
+        .executable(name: "keyboard-clean", targets: ["keyboard-clean"])
     ],
     targets: [
         .executableTarget(
-            name: "cleaning-keyboard",
+            name: "keyboard-clean",
             linkerSettings: [
                 .linkedFramework("ApplicationServices")
             ]
