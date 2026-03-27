@@ -86,6 +86,7 @@ final class KeyboardLocker {
 func printUsage() {
     let text = """
     Usage:
+      keyboard-clean [SECONDS] [--allow-escape true|false]
       keyboard-clean [--seconds N] [--allow-escape true|false]
 
     Defaults:
@@ -106,6 +107,7 @@ struct Config {
 
 func parseArgs() -> Config? {
     var config = Config()
+    var secondsWasSet = false
     var index = 1
     let args = CommandLine.arguments
 
@@ -121,7 +123,12 @@ func parseArgs() -> Config? {
                 fputs("Invalid value for --seconds.\\n", stderr)
                 return nil
             }
+            guard !secondsWasSet else {
+                fputs("Seconds was provided more than once.\\n", stderr)
+                return nil
+            }
             config.seconds = value
+            secondsWasSet = true
             index += 1
         case "--allow-escape":
             guard index + 1 < args.count else {
@@ -139,8 +146,17 @@ func parseArgs() -> Config? {
             }
             index += 1
         default:
-            fputs("Unknown argument: \(arg)\\n", stderr)
-            return nil
+            if let value = Int(arg), value > 0 {
+                guard !secondsWasSet else {
+                    fputs("Seconds was provided more than once.\\n", stderr)
+                    return nil
+                }
+                config.seconds = value
+                secondsWasSet = true
+            } else {
+                fputs("Unknown argument: \(arg)\\n", stderr)
+                return nil
+            }
         }
 
         index += 1
